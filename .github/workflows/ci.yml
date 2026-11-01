@@ -143,7 +143,7 @@ jobs:
   # commit's stack. D3 Auth signs native clients in through the browser (AUTH-ADR-008), so the
   # manifest checks and me.unauthenticated run and the native session checks skip by design.
   #
-  # The suite's image is public, as matdemers1/d3-app-contract is, so it is pulled with no token.
+  # The suite's image is public, as D3Cloud-io/d3-app-contract is, so it is pulled with no token.
   # `contract-suite` checks first that it can be: when it cannot, this job is skipped — never
   # green having run nothing — and that job's summary carries the reason (CON-T-002).
   app-contract:
@@ -164,7 +164,7 @@ jobs:
         run: pnpm dev:up
       - name: The d3-app-contract suite
         run: |
-          docker run --rm --network host -v "$PWD:/out" ghcr.io/matdemers1/d3-app-conformance:contract-1 \
+          docker run --rm --network host -v "$PWD:/out" ghcr.io/d3cloud-io/d3-app-conformance:contract-1 \
             --base http://localhost:3000 --allow-http --product d3auth --destructive --junit /out/conformance.xml
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
@@ -188,7 +188,7 @@ jobs:
       - name: Can the suite's image be pulled anonymously?
         id: probe
         env:
-          IMAGE: ghcr.io/matdemers1/d3-app-conformance:contract-1
+          IMAGE: ghcr.io/d3cloud-io/d3-app-conformance:contract-1
         run: |
           if out="$(docker manifest inspect "$IMAGE" 2>&1)"; then
             echo "available=true" >> "$GITHUB_OUTPUT"
@@ -208,7 +208,7 @@ jobs:
             printf '%s\n' "$out"
             echo '```'
             echo
-            echo "The package must be public: https://github.com/users/matdemers1/packages/container/d3-app-conformance/settings"
+            echo "The package must be public: https://github.com/orgs/D3Cloud-io/packages/container/d3-app-conformance/settings"
           } >> "$GITHUB_STEP_SUMMARY"
 
   e2e:
@@ -263,10 +263,14 @@ jobs:
       # the same value /health reports once it has run.
       - id: shipyard-labels
         run: ./scripts/shipyard-labels.sh "$GITHUB_SHA" | tee -a "$GITHUB_OUTPUT"
+      # Image names must be lowercase and the owner is not (D3Cloud-io, GL-006): ghcr.io/d3cloud-io/d3-auth/server.
+      - id: meta-name
+        name: Lowercase the server image name
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}/server" >> "$GITHUB_OUTPUT"
       - id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
-          images: ghcr.io/${{ github.repository }}/server
+          images: ${{ steps.meta-name.outputs.name }}
           tags: |
             type=sha,format=long
             type=raw,value=latest
@@ -286,10 +290,14 @@ jobs:
           cache-to: type=gha,mode=max
       # The Express example, published so Shipyard can deploy demo.d3cloud.io like any other app
       # (AUTH-T-001, SHP-T-1.13): a sha- tag and a revision label, from main only.
+      # Image names must be lowercase and the owner is not (D3Cloud-io, GL-006): ghcr.io/d3cloud-io/d3-auth/demo.
+      - id: demo-meta-name
+        name: Lowercase the demo image name
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY,,}/demo" >> "$GITHUB_OUTPUT"
       - id: demo-meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
-          images: ghcr.io/${{ github.repository }}/demo
+          images: ${{ steps.demo-meta-name.outputs.name }}
           tags: |
             type=sha,format=long
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7

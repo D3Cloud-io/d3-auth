@@ -30,7 +30,7 @@ Running in production since September 2026 behind a Cloudflare Tunnel on a home 
   roles claim, redirect URIs — each value copyable, derived from how this instance is actually set up.
 - **A console** for people, groups, apps, sessions, the audit trail, signing keys, settings, and
   export/import — desktop and phone, light and dark, built on
-  [`@d3cloud/ui`](https://github.com/matdemers1/d3-design-system).
+  [`@d3cloud/ui`](https://github.com/D3Cloud-io/d3-design-system).
 - **Operations that are not an afterthought.** Signing keys rotate through
   `next → current → retiring`; nightly backup bundles go offsite encrypted, and a **restore drill**
   restores last night's bundle into a throwaway database, decrypts the keys with the host's KEK, and
@@ -62,7 +62,7 @@ Needs Docker and a domain that reaches the machine over HTTPS (a tunnel, or a re
 `ISSUER` must be the public address; only a loopback issuer may be plain HTTP.
 
 ```bash
-git clone https://github.com/matdemers1/d3-auth.git && cd d3-auth
+git clone https://github.com/D3Cloud-io/d3-auth.git && cd d3-auth
 cp .env.example .env
 
 # three secrets, and a database password
