@@ -164,7 +164,7 @@ jobs:
         run: pnpm dev:up
       - name: The d3-app-contract suite
         run: |
-          docker run --rm --network host -v "$PWD:/out" ghcr.io/d3cloud-io/d3-app-conformance:contract-1 \
+          docker run --rm --user "$(id -u)" --network host -v "$PWD:/out" ghcr.io/d3cloud-io/d3-app-conformance:contract-1 \
             --base http://localhost:3000 --allow-http --product d3auth --destructive --junit /out/conformance.xml
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
