@@ -30,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: apps/server/Dockerfile
-    image: ghcr.io/matdemers1/d3-auth/server:${D3AUTH_TAG:-local}
+    image: ghcr.io/d3cloud-io/d3-auth/server:${D3AUTH_TAG:-local}
     env_file:
       - path: .env
         required: false

@@ -41,14 +41,14 @@
     "pkce",
     "back-channel-logout"
   ],
-  "homepage": "https://github.com/matdemers1/d3-auth/tree/main/packages/auth-client#readme",
+  "homepage": "https://github.com/D3Cloud-io/d3-auth/tree/main/packages/auth-client#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matdemers1/d3-auth.git",
+    "url": "git+https://github.com/D3Cloud-io/d3-auth.git",
     "directory": "packages/auth-client"
   },
   "bugs": {
-    "url": "https://github.com/matdemers1/d3-auth/issues"
+    "url": "https://github.com/D3Cloud-io/d3-auth/issues"
   },
   "author": "Matthew Demers",
   "engines": {

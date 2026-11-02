@@ -2,7 +2,7 @@
 # an example should be copyable into someone else's project without inheriting this repo's build.
 FROM node:22-trixie-slim
 
-# Published by CI as ghcr.io/matdemers1/d3-auth/demo:sha-<40hex>; the label lets a deployer check
+# Published by CI as ghcr.io/d3cloud-io/d3-auth/demo:sha-<40hex>; the label lets a deployer check
 # that the image it runs is the commit it verified.
 ARG REVISION=unknown
 LABEL org.opencontainers.image.revision=$REVISION

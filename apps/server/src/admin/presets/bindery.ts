@@ -22,7 +22,7 @@ export const bindery: Preset = {
   key: 'bindery',
   name: 'Bindery',
   summary: 'The household document archive',
-  docsUrl: 'https://github.com/matdemers1/d3-auth/blob/main/docs/consumer-contract.md',
+  docsUrl: 'https://github.com/D3Cloud-io/d3-auth/blob/main/docs/consumer-contract.md',
   where: 'Settings → Sign in with D3 Auth',
   checked: '17 September 2026',
   ownerRole: 'admin',

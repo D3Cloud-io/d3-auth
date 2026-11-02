@@ -16,7 +16,7 @@ export const constellation: Preset = {
   key: 'constellation',
   name: 'D3 Constellation',
   summary: 'The app for iPhone, iPad and Mac',
-  docsUrl: 'https://github.com/matdemers1/d3-app-contract',
+  docsUrl: 'https://github.com/D3Cloud-io/d3-app-contract',
   where: 'Constellation → Add a product → D3 Auth',
   checked: '4 October 2026',
   inputs: [],

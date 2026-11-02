@@ -1,6 +1,6 @@
 # @d3cloudio/auth-client
 
-The relying-party SDK for [D3 Auth](https://github.com/matdemers1/d3-auth), a small self-hosted
+The relying-party SDK for [D3 Auth](https://github.com/D3Cloud-io/d3-auth), a small self-hosted
 OpenID Connect provider. It exists so a consuming app gets the four things that are easiest to get
 wrong for free: a pinned algorithm list, identity by `(iss, sub)` rather than email, roles refreshed
 on every renewal, and a back-channel logout handler that is idempotent by `jti`.
@@ -91,7 +91,7 @@ it hides itself when the provider is down rather than offering a sign-in that ca
 
 ## What it will not do for you
 
-Ten rules make up the [consumer contract](https://github.com/matdemers1/d3-auth/blob/main/docs/consumer-contract.md);
+Ten rules make up the [consumer contract](https://github.com/D3Cloud-io/d3-auth/blob/main/docs/consumer-contract.md);
 this SDK covers four. The rest are yours: keep tokens on the server, treat roles as this app's own,
 end your session when the logout token arrives, and never accept an unsigned or unexpected
 algorithm anywhere else in your code.
