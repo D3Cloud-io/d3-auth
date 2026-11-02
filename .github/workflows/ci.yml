@@ -164,7 +164,7 @@ jobs:
         run: pnpm dev:up
       - name: The d3-app-contract suite
         run: |
-          docker run --rm --network host -v "$PWD:/out" ghcr.io/matdemers1/d3-app-conformance:contract-1 \
+          docker run --rm --network host -v "$PWD:/out" ghcr.io/d3cloud-io/d3-app-conformance:contract-1 \
             --base http://localhost:3000 --allow-http --product d3auth --destructive --junit /out/conformance.xml
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
@@ -188,7 +188,7 @@ jobs:
       - name: Can the suite's image be pulled anonymously?
         id: probe
         env:
-          IMAGE: ghcr.io/matdemers1/d3-app-conformance:contract-1
+          IMAGE: ghcr.io/d3cloud-io/d3-app-conformance:contract-1
         run: |
           if out="$(docker manifest inspect "$IMAGE" 2>&1)"; then
             echo "available=true" >> "$GITHUB_OUTPUT"
@@ -208,7 +208,7 @@ jobs:
             printf '%s\n' "$out"
             echo '```'
             echo
-            echo "The package must be public: https://github.com/users/matdemers1/packages/container/d3-app-conformance/settings"
+            echo "The package must be public: https://github.com/orgs/D3Cloud-io/packages/container/d3-app-conformance/settings"
           } >> "$GITHUB_STEP_SUMMARY"
 
   e2e:
