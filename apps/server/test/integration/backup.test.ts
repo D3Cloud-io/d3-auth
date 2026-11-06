@@ -135,7 +135,7 @@ describe('the restore drill', () => {
     try {
       const result = await runDrill(drillContext());
       expect(result.ok).toBe(true);
-      const cleared = new Set(stopped.mock.calls.map(([handle]) => handle));
+      const cleared = new Set<unknown>(stopped.mock.calls.map(([handle]) => handle as unknown));
       const running = started.mock.results.map((entry) => entry.value as unknown).filter((handle) => !cleared.has(handle));
       expect(running).toEqual([]);
     } finally {
