@@ -128,12 +128,24 @@ describe('the restore drill', () => {
 
   // AUTH-T-6.8: the second service's 30-second refresh outlived its close and kept reconnecting to
   // the dropped drill database, so nothing the drill started may still be running when it returns.
-  it('leaves no connection to the drill database and no timer running behind it', async () => {
+  it('leaves no timer running behind it, and no connection to the drill database before it is dropped', async () => {
     await backup();
+    // The drill drops its database with FORCE, which ends every backend on it, so connections can
+    // only be checked before the drop: the drill writes its pass event after the second service has
+    // closed and just before the drop.
+    let beforeDrop: { datname: string }[] | undefined;
+    const watching: AuditWriter = {
+      write: async (entry) => {
+        if (entry.event === 'backup.drill_passed') {
+          beforeDrop = await h.service.db.$queryRaw<{ datname: string }[]>`SELECT datname FROM pg_stat_activity WHERE datname LIKE 'd3auth_drill_%'`;
+        }
+        await audit.write(entry);
+      },
+    };
     const started = vi.spyOn(globalThis, 'setInterval');
     const stopped = vi.spyOn(globalThis, 'clearInterval');
     try {
-      const result = await runDrill(drillContext());
+      const result = await runDrill(drillContext({ audit: watching }));
       expect(result.ok).toBe(true);
       const cleared = new Set<unknown>(stopped.mock.calls.map(([handle]) => handle as unknown));
       const running = started.mock.results.map((entry) => entry.value as unknown).filter((handle) => !cleared.has(handle));
@@ -142,8 +154,7 @@ describe('the restore drill', () => {
       started.mockRestore();
       stopped.mockRestore();
     }
-    const connections = await h.service.db.$queryRaw<{ datname: string }[]>`SELECT datname FROM pg_stat_activity WHERE datname LIKE 'd3auth_drill_%'`;
-    expect(connections).toEqual([]);
+    expect(beforeDrop).toEqual([]);
   });
 
   it('fails, by name, with a KEK that did not seal the bundle', async () => {

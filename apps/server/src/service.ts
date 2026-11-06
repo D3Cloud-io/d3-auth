@@ -127,8 +127,16 @@ export async function createService(config: ServiceConfig, logger: Logger, overr
   // a current copy (refreshed below, once settings exist) rather than making every save a query.
   let sessionIdleDays = DEFAULT_IDLE_DAYS;
   // Hoisted as a function so Settings, created further down, can call it when lifetimes change.
-  async function refreshLifetimes(): Promise<void> {
-    sessionIdleDays = (await settings.lifetimes()).sessionDays;
+  const refreshing = new Set<Promise<void>>();
+  function refreshLifetimes(): Promise<void> {
+    const run = settings.lifetimes().then((lifetimes) => {
+      sessionIdleDays = lifetimes.sessionDays;
+    });
+    // Tracked so close() can wait for a refresh that is mid-query rather than race it.
+    const tracked = run.finally(() => refreshing.delete(tracked));
+    refreshing.add(tracked);
+    tracked.catch(() => undefined);
+    return run;
   }
   const consoleDist = config.CONSOLE_DIST ?? defaultConsoleDist();
   const provider = createProvider({
@@ -383,6 +391,7 @@ export async function createService(config: ServiceConfig, logger: Logger, overr
       // Stop the refresh first: a tick after $disconnect would reconnect the client, and keep
       // retrying a database that has since been dropped (AUTH-T-6.8).
       clearInterval(lifetimeTimer);
+      await Promise.allSettled([...refreshing]);
       await db.$disconnect();
     },
   };
