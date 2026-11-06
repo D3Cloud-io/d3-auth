@@ -379,6 +379,11 @@ export async function createService(config: ServiceConfig, logger: Logger, overr
     recovery,
     backchannel,
     sessions: sessionControl,
-    close: () => db.$disconnect(),
+    close: async () => {
+      // Stop the refresh first: a tick after $disconnect would reconnect the client, and keep
+      // retrying a database that has since been dropped (AUTH-T-6.8).
+      clearInterval(lifetimeTimer);
+      await db.$disconnect();
+    },
   };
 }
